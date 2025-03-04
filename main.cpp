@@ -19,6 +19,7 @@ source run.sh
 #include "source/namespaces/utilities/utilities.cpp"
 
 using namespace std;
+using namespace utilities;
 
 int main() {
     auto start = std::chrono::system_clock::now();  // Start counting running time
@@ -50,6 +51,6 @@ int main() {
     if (elapsed_time_seconds.count() < 60) {
         std::cout << "Running time:\t" << elapsed_time_seconds.count() << " seconds\n\n";
     } else {
-        std::cout << "Running time:\t" << to_string_with_precision(elapsed_time_minutes, 3) << " minutes\n\n";
+        std::cout << "Running time:\t" << ToStringWithPrecision(elapsed_time_minutes, 3) << " minutes\n\n";
     }
 }
