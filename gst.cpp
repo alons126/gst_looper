@@ -1,3 +1,19 @@
+/*
+/cvmfs/oasis.opensciencegrid.org/mis/apptainer/current/bin/apptainer shell --shell=/bin/bash -B /cvmfs,/exp,/nashome,/pnfs/genie,/opt,/run/user,/etc/hostname,/etc/hosts,/etc/krb5.conf --ipc
+--pid /cvmfs/singularity.opensciencegrid.org/fermilab/fnal-dev-sl7:latest
+
+cd $MY_USER_FOLDER/GENIE
+
+source genie_env.sh
+
+source /cvmfs/fermilab.opensciencegrid.org/products/common/etc/setup
+setup fife_utils
+
+cd /pnfs/genie/scratch/users/asportes/gst_looper
+
+source run.sh
+ */
+
 #define gst_cxx
 
 #include "gst.h"
@@ -63,7 +79,8 @@ void gst::Loop() {
     TH1D *h_El_DIS_1n1p = new TH1D("El_DIS_1n1p", "E_{e} in 1n1p and DIS;E_{e} [GeV]", 50, 0, 6.5);
     TH1D *h_Q2_DIS_1n1p = new TH1D("Q2_DIS_1n1p", "Q2 in 1n1p and DIS;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
 
-    int limiter = 1000000;
+    int limiter = -1;
+    // int limiter = 1000000;
 
     if (fChain == 0) return;
 
@@ -71,7 +88,7 @@ void gst::Loop() {
 
     Long64_t nbytes = 0, nb = 0;
     for (Long64_t jentry = 0; jentry < nentries; jentry++) {
-        if (jentry > limiter) { break; }
+        if ((limiter > 0) && (jentry > limiter)) { break; }
 
         Long64_t ientry = LoadTree(jentry);
 
@@ -98,7 +115,7 @@ void gst::Loop() {
             if (ispFDpCD) {
                 h_El_all_Int_2p->Fill(El);
                 h_Q2_all_Int_2p->Fill(Q2);
-        
+
                 if (qel) {
                     h_El_QE_2p->Fill(El);
                     h_Q2_QE_2p->Fill(Q2);
@@ -111,7 +128,7 @@ void gst::Loop() {
                 } else if (dis) {
                     h_El_DIS_2p->Fill(El);
                     h_Q2_DIS_2p->Fill(Q2);
-                }        
+                }
             }
         } else if (Is1n1p) {
             int neutron_ind, proton_ind;
@@ -129,11 +146,11 @@ void gst::Loop() {
             double theta_p = acos(pzf[proton_ind] / sqrt(pxf[proton_ind] * pxf[proton_ind] + pyf[proton_ind] * pyf[proton_ind] + pzf[proton_ind] * pzf[proton_ind])) * 180.0 / 3.14159265359;
             bool isInAcceptance = ((theta_n >= 5. && theta_n <= 40.) && (theta_p >= 40. && theta_p <= 140.));
             bool isnFDpCD = (isInAcceptance && (pf[0] >= 0.4) && (pf[1] >= 0.4));
-        
+
             if (isnFDpCD) {
                 h_El_all_Int_1n1p->Fill(El);
                 h_Q2_all_Int_1n1p->Fill(Q2);
-        
+
                 if (qel) {
                     h_El_QE_1n1p->Fill(El);
                     h_Q2_QE_1n1p->Fill(Q2);
@@ -146,7 +163,7 @@ void gst::Loop() {
                 } else if (dis) {
                     h_El_DIS_1n1p->Fill(El);
                     h_Q2_DIS_1n1p->Fill(Q2);
-                }        
+                }
             }
         }
 
@@ -251,7 +268,7 @@ void gst::Loop() {
     h_Q2_DIS_2p->Draw();
     canvas->SaveAs("./h_Q2_DIS_2p.pdf");
     canvas->Clear();
-    
+
     h_El_all_Int_1n1p->Draw();
     canvas->SaveAs("./h_El_all_Int_1n1p.pdf");
     canvas->Clear();
