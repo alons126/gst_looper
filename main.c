@@ -2,7 +2,7 @@
 
 #include "gst.cpp"
 
-using namesapce std;
+using namespace std;
 
 int main() {
     auto start = std::chrono::system_clock::now();  // Start counting running time

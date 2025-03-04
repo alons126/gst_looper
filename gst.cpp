@@ -1,4 +1,8 @@
+
+// cd /pnfs/genie/scratch/users/asportes/gst_looper
+
 #define gst_cxx
+
 #include "gst.h"
 
 #include <TCanvas.h>
@@ -40,7 +44,6 @@ void gst::Loop() {
 
     Long64_t nbytes = 0, nb = 0;
     for (Long64_t jentry = 0; jentry < nentries; jentry++) {
-        
         if (jentry > limiter) { break; }
 
         Long64_t ientry = LoadTree(jentry);
@@ -53,7 +56,6 @@ void gst::Loop() {
 
         h_El->Fill(El);
         h_Q2->Fill(Q2);
-
     }
 
     int pixelx = 1980, pixely = 1530;
