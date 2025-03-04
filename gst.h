@@ -232,8 +232,8 @@ gst::gst(const char *files, TTree *tree) : fChain(0) {
     // if parameter tree is not specified (or zero), connect the file
     // used to generate this class and read the Tree.
     if (tree == 0) {
-        TFile *f = (TFile *)gROOT->GetListOfFiles()->FindObject("12C_2222GeV_G18_10a_02_11a_Q2_0_1.root");
-        if (!f || !f->IsOpen()) { f = new TFile("12C_2222GeV_G18_10a_02_11a_Q2_0_1.root"); }
+        TFile *f = (TFile *)gROOT->GetListOfFiles()->FindObject(files);
+        if (!f || !f->IsOpen()) { f = new TFile(files); }
         f->GetObject("gst", tree);
     }
     Init(tree);
