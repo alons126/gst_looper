@@ -30,8 +30,16 @@ void gst::Loop() {
     // METHOD2: replace line
     //    fChain->GetEntry(jentry);       //read all branches
     // by  b_branchname->GetEntry(ientry); //read only this branch
-    TH1D *h_El = new TH1D("", "", 100, 0, 1);
-    TH1D *h_Q2 = new TH1D("Q2 in (e,e')", "Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6);
+    TH1D *h_El_all_Int = new TH1D("El_all_Int", "E_{e} in (e,e');E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_all_Int = new TH1D("Q2_all_Int", "Q2 in (e,e');Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_QE = new TH1D("El_QE", "E_{e} in (e,e') and QE;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_QE = new TH1D("Q2_QE", "Q2 in (e,e') and QE;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_MEC = new TH1D("El_MEC", "E_{e} in (e,e') and MEC;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_MEC = new TH1D("Q2_MEC", "Q2 in (e,e') and MEC;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_RES = new TH1D("El_RES", "E_{e} in (e,e') and RES;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_RES = new TH1D("Q2_RES", "Q2 in (e,e') and RES;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_DIS = new TH1D("El_DIS", "E_{e} in (e,e') and DIS;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_DIS = new TH1D("Q2_DIS", "Q2 in (e,e') and DIS;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
 
     int limiter = 1000000;
 
@@ -51,19 +59,69 @@ void gst::Loop() {
 
         nbytes += nb;
 
-        h_El->Fill(El);
-        h_Q2->Fill(Q2);
+        if (acos(pzl / sqrt(pxl * pxl + pyl * pyl + pzl * pzl)) * 180.0 / 3.14159265359 < 7.) { continue; }
+
+        if (!((nf == 2 && nfn == 1 && nfp == 1) || (nf == 2 && nfn == 0 && nfp == 2))) { continue; }
+
+        h_El_all_Int->Fill(El);
+        h_Q2_all_Int->Fill(Q2);
+
+        if (qel) {
+            h_El_QE->Fill(El);
+            h_Q2_QE->Fill(Q2);
+        } else if (mec) {
+            h_El_MEC->Fill(El);
+            h_Q2_MEC->Fill(Q2);
+        } else if (res) {
+            h_El_RES->Fill(El);
+            h_Q2_RES->Fill(Q2);
+        } else if (dis) {
+            h_El_DIS->Fill(El);
+            h_Q2_DIS->Fill(Q2);
+        }
     }
 
     int pixelx = 1980, pixely = 1530;
     TCanvas *canvas = new TCanvas("myText", "myText", pixelx, pixely);
     canvas->cd();
 
-    h_El->Draw();
-    canvas->SaveAs("./h_El.pdf");
+    h_El_all_Int->Draw();
+    canvas->SaveAs("./h_El_all_Int.pdf");
     canvas->Clear();
 
-    h_Q2->Draw();
-    canvas->SaveAs("./h_Q2.pdf");
+    h_Q2_all_Int->Draw();
+    canvas->SaveAs("./h_Q2_all_Int.pdf");
+    canvas->Clear();
+
+    h_El_QE->Draw();
+    canvas->SaveAs("./h_El_QE.pdf");
+    canvas->Clear();
+
+    h_Q2_QE->Draw();
+    canvas->SaveAs("./h_Q2_QE.pdf");
+    canvas->Clear();
+
+    h_El_MEC->Draw();
+    canvas->SaveAs("./h_El_MEC.pdf");
+    canvas->Clear();
+
+    h_Q2_MEC->Draw();
+    canvas->SaveAs("./h_Q2_MEC.pdf");
+    canvas->Clear();
+
+    h_El_RES->Draw();
+    canvas->SaveAs("./h_El_RES.pdf");
+    canvas->Clear();
+
+    h_Q2_RES->Draw();
+    canvas->SaveAs("./h_Q2_RES.pdf");
+    canvas->Clear();
+
+    h_El_DIS->Draw();
+    canvas->SaveAs("./h_El_DIS.pdf");
+    canvas->Clear();
+
+    h_Q2_DIS->Draw();
+    canvas->SaveAs("./h_Q2_DIS.pdf");
     canvas->Clear();
 }
