@@ -5,7 +5,6 @@
 #include <TH2.h>
 #include <TStyle.h>
 
-
 void gst::Loop() {
     //   In a ROOT session, you can do:
     //      root> .L gst.C
@@ -33,28 +32,39 @@ void gst::Loop() {
     TH1D *h_El = new TH1D("", "", 100, 0, 1);
     TH1D *h_Q2 = new TH1D("Q2 in (e,e')", "Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6);
 
+    int limiter = 1000000;
+
     if (fChain == 0) return;
 
     Long64_t nentries = fChain->GetEntriesFast();
 
     Long64_t nbytes = 0, nb = 0;
     for (Long64_t jentry = 0; jentry < nentries; jentry++) {
+        
+        if (jentry > limiter) { break; }
+
         Long64_t ientry = LoadTree(jentry);
+
         if (ientry < 0) break;
+
         nb = fChain->GetEntry(jentry);
+
         nbytes += nb;
+
         h_El->Fill(El);
         h_Q2->Fill(Q2);
-        // if (Cut(ientry) < 0) continue;
+
     }
 
-    int pixelx = 1980;
-    int pixely = 1530;
+    int pixelx = 1980, pixely = 1530;
     TCanvas *canvas = new TCanvas("myText", "myText", pixelx, pixely);
     canvas->cd();
-    
+
     h_El->Draw();
     canvas->SaveAs("./h_El.pdf");
     canvas->Clear();
-    
+
+    h_Q2->Draw();
+    canvas->SaveAs("./h_Q2.pdf");
+    canvas->Clear();
 }
