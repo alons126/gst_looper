@@ -24,6 +24,8 @@ using namespace utilities;
 int main() {
     auto start = std::chrono::system_clock::now();  // Start counting running time
 
+    system("rm ./*.pdf");
+
     string BaseDir = "/pnfs/genie/persistent/users/asportes/2N_Analysis_Samples";
 
     string Target = "C12";
