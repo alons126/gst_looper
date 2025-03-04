@@ -130,7 +130,7 @@ void gst::Loop() {
             bool isInAcceptance = ((theta_n >= 5. && theta_n <= 40.) && (theta_p >= 40. && theta_p <= 140.));
             bool isnFDpCD = (isInAcceptance && (pf[0] >= 0.4) && (pf[1] >= 0.4));
         
-            if (ispFDpCD) {
+            if (isnFDpCD) {
                 h_El_all_Int_1n1p->Fill(El);
                 h_Q2_all_Int_1n1p->Fill(Q2);
         
