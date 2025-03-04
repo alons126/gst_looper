@@ -13,6 +13,6 @@ echo ""
 # echo ""
 echo "\033[35m- Lunching data-analysis code -----------------------------------------\033[0m"
 echo ""
-root -b -q ./main.c
+root -b -q ./main.cpp
 echo ""
 echo "\033[35m- Operation finished --------------------------------------------------\033[0m"
