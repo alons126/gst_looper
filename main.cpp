@@ -1,6 +1,22 @@
+/*
+/cvmfs/oasis.opensciencegrid.org/mis/apptainer/current/bin/apptainer shell --shell=/bin/bash -B /cvmfs,/exp,/nashome,/pnfs/genie,/opt,/run/user,/etc/hostname,/etc/hosts,/etc/krb5.conf --ipc --pid /cvmfs/singularity.opensciencegrid.org/fermilab/fnal-dev-sl7:latest
+
+cd $MY_USER_FOLDER/GENIE
+
+source genie_env.sh
+
+source /cvmfs/fermilab.opensciencegrid.org/products/common/etc/setup
+setup fife_utils
+
+cd /pnfs/genie/scratch/users/asportes/gst_looper
+
+source run.sh
+ */
+
 #include <iostream>
 
 #include "gst.cpp"
+#include "source/namespaces/utilities/utilities.cpp"
 
 using namespace std;
 

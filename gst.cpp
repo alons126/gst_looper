@@ -1,6 +1,3 @@
-
-// cd /pnfs/genie/scratch/users/asportes/gst_looper
-
 #define gst_cxx
 
 #include "gst.h"
