@@ -26,7 +26,10 @@ void gst_looper(const char *filePattern = "*.root") {
 
         // Open the ROOT file
         TFile *file = TFile::Open(fileName);
-        if (!file || file->IsZombie()) { std::cerr << "Error opening file: " << fileName << std::endl, continue; }
+        if (!file || file->IsZombie()) {
+            std::cerr << "Error opening file: " << fileName << std::endl;
+            continue;
+        }
 
         std::cout << "Processing file: " << fileName << std::endl;
 
