@@ -1,5 +1,6 @@
 /*
-/cvmfs/oasis.opensciencegrid.org/mis/apptainer/current/bin/apptainer shell --shell=/bin/bash -B /cvmfs,/exp,/nashome,/pnfs/genie,/opt,/run/user,/etc/hostname,/etc/hosts,/etc/krb5.conf --ipc --pid /cvmfs/singularity.opensciencegrid.org/fermilab/fnal-dev-sl7:latest
+/cvmfs/oasis.opensciencegrid.org/mis/apptainer/current/bin/apptainer shell --shell=/bin/bash -B /cvmfs,/exp,/nashome,/pnfs/genie,/opt,/run/user,/etc/hostname,/etc/hosts,/etc/krb5.conf --ipc
+--pid /cvmfs/singularity.opensciencegrid.org/fermilab/fnal-dev-sl7:latest
 
 cd $MY_USER_FOLDER/GENIE
 
@@ -28,23 +29,30 @@ int main() {
 
     string BaseDir = "/pnfs/genie/persistent/users/asportes/2N_Analysis_Samples";
 
-    string Target = "C12";
+    vector<string> Targets_v = {"C12"};
+    // vector<string> Targets_v = {"D2", "C12", "Ar40"};
+    vector<string> GENIE_tune_v = {"G18_10a_00_000", "GEM21_11a_00_000"};
+    vector<string> BeamE_v = {"2070MeV", "4029MeV", "5986MeV"};
 
-    string GENIE_tune = "G18_10a_00_000";
+    for (int Targets_v_ind = 0; Targets_v_ind < Targets_v.size(); Targets_v_ind++) {
+        for (int GENIE_tune_v_ind = 0; GENIE_tune_v_ind < GENIE_tune_v.size(); GENIE_tune_v_ind++) {
+            for (int BeamE_v_ind = 0; BeamE_v_ind < BeamE_v.size(); BeamE_v_ind++) {
+                string Target = Targets_v.at(Targets_v_ind);
+                string GENIE_tune = GENIE_tune_v.at(GENIE_tune_v_ind);
+                string BeamE = BeamE_v.at(BeamE_v_ind);
+                string Q2_th = (BeamE = "2070MeV") ? "Q2_0_02" : (BeamE = "4029MeV") ? "Q2_0_25" : "Q2_0_40";
+                string filesPath = BaseDir + "/" + Target + "/" + GENIE_tune + "/" + BeamE + "_" + Q2_th + "/master-routine_validation_01-eScattering/" + Target + "_" + GENIE_tune + "_" +
+                                   Q2_th + "_" + BeamE + ".root";
 
-    string BeamE = "2070MeV";
+                const char *files = filesPath.c_str();
+                // const char *files = "*.root";
 
-    string Q2_th = "Q2_0_02";
+                gst loopTree = gst(files);
 
-    string filesPath = BaseDir + "/" + Target + "/" + GENIE_tune + "/" + BeamE + "_" + Q2_th + "/master-routine_validation_01-eScattering/" + Target + "_" + GENIE_tune + "_" + Q2_th + "_" +
-                       BeamE + ".root";
-
-    const char *files = filesPath.c_str();
-    // const char *files = "*.root";
-
-    gst loopTree = gst(files);
-
-    loopTree.Loop();
+                loopTree.Loop(Target, GENIE_tune, BeamE, Q2_th);
+            }
+        }
+    }
 
     auto end = std::chrono::system_clock::now();
     auto elapsed_time_seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start);
