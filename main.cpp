@@ -39,7 +39,7 @@ int main() {
                 string Target = Targets_v.at(Targets_v_ind);
                 string GENIE_tune = GENIE_tune_v.at(GENIE_tune_v_ind);
                 string BeamE = BeamE_v.at(BeamE_v_ind);
-                string Q2_th = (BeamE = "2070MeV") ? "Q2_0_02" : (BeamE = "4029MeV") ? "Q2_0_25" : "Q2_0_40";
+                string Q2_th = (BeamE == "2070MeV") ? "Q2_0_02" : (BeamE == "4029MeV") ? "Q2_0_25" : "Q2_0_40";
                 string filesPath = BaseDir + "/" + Target + "/" + GENIE_tune + "/" + BeamE + "_" + Q2_th + "/master-routine_validation_01-eScattering/" + Target + "_" + GENIE_tune + "_" +
                                    Q2_th + "_" + BeamE + ".root";
 
