@@ -22,7 +22,7 @@ source run.sh
 #include <TH2.h>
 #include <TStyle.h>
 
-void gst::Loop() {
+void gst::Loop(string Target, string GENIE_tune, string BeamE, string Q2_th) {
     //   In a ROOT session, you can do:
     //      root> .L gst.C
     //      root> gst t
@@ -46,16 +46,44 @@ void gst::Loop() {
     // METHOD2: replace line
     //    fChain->GetEntry(jentry);       //read all branches
     // by  b_branchname->GetEntry(ientry); //read only this branch
-    TH1D *h_El_all_Int = new TH1D("El_all_Int", "E_{e} in (e,e');E_{e} [GeV]", 50, 0, 6.5);
-    TH1D *h_Q2_all_Int = new TH1D("Q2_all_Int", "Q2 in (e,e');Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
-    TH1D *h_El_QE = new TH1D("El_QE", "E_{e} in (e,e') and QE;E_{e} [GeV]", 50, 0, 6.5);
-    TH1D *h_Q2_QE = new TH1D("Q2_QE", "Q2 in (e,e') and QE;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
-    TH1D *h_El_MEC = new TH1D("El_MEC", "E_{e} in (e,e') and MEC;E_{e} [GeV]", 50, 0, 6.5);
-    TH1D *h_Q2_MEC = new TH1D("Q2_MEC", "Q2 in (e,e') and MEC;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
-    TH1D *h_El_RES = new TH1D("El_RES", "E_{e} in (e,e') and RES;E_{e} [GeV]", 50, 0, 6.5);
-    TH1D *h_Q2_RES = new TH1D("Q2_RES", "Q2 in (e,e') and RES;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
-    TH1D *h_El_DIS = new TH1D("El_DIS", "E_{e} in (e,e') and DIS;E_{e} [GeV]", 50, 0, 6.5);
-    TH1D *h_Q2_DIS = new TH1D("Q2_DIS", "Q2 in (e,e') and DIS;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+
+    system(("mkdir -p " + Target).c_str());
+    system(("mkdir -p " + Target + "/" + GENIE_tune).c_str());
+    system(("mkdir -p " + Target + "/" + GENIE_tune + "/" + BeamE).c_str());
+    system(("mkdir -p " + Target + "/" + GENIE_tune + "/" + BeamE + "/" + Q2_th).c_str());
+    string SaveDir = Target + "/" + GENIE_tune + "/" + BeamE + "/" + Q2_th;
+
+    double theta_e_min;
+
+    if (BeamE = "2070MeV") {
+        theta_e_min = 7;
+    } else if (BeamE = "4029MeV") {
+        theta_e_min = 10;
+    } else if (BeamE = "5986MeV") {
+        theta_e_min = 9;
+    }
+
+    TH1D *h_El_all_Int_inc = new TH1D("El_all_Int_inc", "E_{e} in (e,e');E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_all_Int_inc = new TH1D("Q2_all_Int_inc", "Q2 in (e,e');Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_QE_inc = new TH1D("El_QE_inc", "E_{e} in (e,e') and QE;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_QE_inc = new TH1D("Q2_QE_inc", "Q2 in (e,e') and QE;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_MEC_inc = new TH1D("El_MEC_inc", "E_{e} in (e,e') and MEC;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_MEC_inc = new TH1D("Q2_MEC_inc", "Q2 in (e,e') and MEC;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_RES_inc = new TH1D("El_RES_inc", "E_{e} in (e,e') and RES;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_RES_inc = new TH1D("Q2_RES_inc", "Q2 in (e,e') and RES;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_DIS_inc = new TH1D("El_DIS_inc", "E_{e} in (e,e') and DIS;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_DIS_inc = new TH1D("Q2_DIS_inc", "Q2 in (e,e') and DIS;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+
+    TH1D *h_El_all_Int_2N = new TH1D("El_all_Int_2N", "E_{e} in 2N;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_all_Int_2N = new TH1D("Q2_all_Int_2N", "Q2 in 2N;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_QE_2N = new TH1D("El_QE_2N", "E_{e} in 2N and QE;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_QE_2N = new TH1D("Q2_QE_2N", "Q2 in 2N and QE;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_MEC_2N = new TH1D("El_MEC_2N", "E_{e} in 2N and MEC;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_MEC_2N = new TH1D("Q2_MEC_2N", "Q2 in 2N and MEC;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_RES_2N = new TH1D("El_RES_2N", "E_{e} in 2N and RES;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_RES_2N = new TH1D("Q2_RES_2N", "Q2 in 2N and RES;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
+    TH1D *h_El_DIS_2N = new TH1D("El_DIS_2N", "E_{e} in 2N and DIS;E_{e} [GeV]", 50, 0, 6.5);
+    TH1D *h_Q2_DIS_2N = new TH1D("Q2_DIS_2N", "Q2 in 2N and DIS;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
 
     TH1D *h_El_all_Int_2p = new TH1D("El_all_Int_2p", "E_{e} in 2p;E_{e} [GeV]", 50, 0, 6.5);
     TH1D *h_Q2_all_Int_2p = new TH1D("Q2_all_Int_2p", "Q2 in 2p;Q^{2} [GeV^{2}/c^{2}]", 50, 0, 6.5);
@@ -98,10 +126,27 @@ void gst::Loop() {
 
         nbytes += nb;
 
-        if (acos(pzl / sqrt(pxl * pxl + pyl * pyl + pzl * pzl)) * 180.0 / 3.14159265359 < 7.) { continue; }
+        if (acos(pzl / sqrt(pxl * pxl + pyl * pyl + pzl * pzl)) * 180.0 / 3.14159265359 < theta_e_min) { continue; }
 
         bool Is2p = (nf == 2 && nfn == 0 && nfp == 2);
         bool Is1n1p = (nf == 2 && nfn == 1 && nfp == 1);
+
+        h_El_all_Int_inc->Fill(El);
+        h_Q2_all_Int_inc->Fill(Q2);
+
+        if (qel) {
+            h_El_QE_inc->Fill(El);
+            h_Q2_QE_inc->Fill(Q2);
+        } else if (mec) {
+            h_El_MEC_inc->Fill(El);
+            h_Q2_MEC_inc->Fill(Q2);
+        } else if (res) {
+            h_El_RES_inc->Fill(El);
+            h_Q2_RES_inc->Fill(Q2);
+        } else if (dis) {
+            h_El_DIS_inc->Fill(El);
+            h_Q2_DIS_inc->Fill(Q2);
+        }
 
         if (!(Is2p || Is1n1p)) { continue; }
 
@@ -167,21 +212,21 @@ void gst::Loop() {
             }
         }
 
-        h_El_all_Int->Fill(El);
-        h_Q2_all_Int->Fill(Q2);
+        h_El_all_Int_2N->Fill(El);
+        h_Q2_all_Int_2N->Fill(Q2);
 
         if (qel) {
-            h_El_QE->Fill(El);
-            h_Q2_QE->Fill(Q2);
+            h_El_QE_2N->Fill(El);
+            h_Q2_QE_2N->Fill(Q2);
         } else if (mec) {
-            h_El_MEC->Fill(El);
-            h_Q2_MEC->Fill(Q2);
+            h_El_MEC_2N->Fill(El);
+            h_Q2_MEC_2N->Fill(Q2);
         } else if (res) {
-            h_El_RES->Fill(El);
-            h_Q2_RES->Fill(Q2);
+            h_El_RES_2N->Fill(El);
+            h_Q2_RES_2N->Fill(Q2);
         } else if (dis) {
-            h_El_DIS->Fill(El);
-            h_Q2_DIS->Fill(Q2);
+            h_El_DIS_2N->Fill(El);
+            h_Q2_DIS_2N->Fill(Q2);
         }
     }
 
@@ -189,123 +234,163 @@ void gst::Loop() {
     TCanvas *canvas = new TCanvas("myText", "myText", pixelx, pixely);
     canvas->cd();
 
-    h_El_all_Int->Draw();
-    canvas->SaveAs("./h_El_all_Int.pdf");
+    h_El_all_Int_inc->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_El_all_Int_inc.pdf").c_str());
     canvas->Clear();
 
-    h_Q2_all_Int->Draw();
-    canvas->SaveAs("./h_Q2_all_Int.pdf");
+    h_Q2_all_Int_inc->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_all_Int_inc.pdf").c_str());
     canvas->Clear();
 
-    h_El_QE->Draw();
-    canvas->SaveAs("./h_El_QE.pdf");
+    h_El_QE_inc->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_El_QE_inc.pdf").c_str());
     canvas->Clear();
 
-    h_Q2_QE->Draw();
-    canvas->SaveAs("./h_Q2_QE.pdf");
+    h_Q2_QE_inc->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_QE_inc.pdf").c_str());
     canvas->Clear();
 
-    h_El_MEC->Draw();
-    canvas->SaveAs("./h_El_MEC.pdf");
+    h_El_MEC_inc->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_El_MEC_inc.pdf").c_str());
     canvas->Clear();
 
-    h_Q2_MEC->Draw();
-    canvas->SaveAs("./h_Q2_MEC.pdf");
+    h_Q2_MEC_inc->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_MEC_inc.pdf").c_str());
     canvas->Clear();
 
-    h_El_RES->Draw();
-    canvas->SaveAs("./h_El_RES.pdf");
+    h_El_RES_inc->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_El_RES_inc.pdf").c_str());
     canvas->Clear();
 
-    h_Q2_RES->Draw();
-    canvas->SaveAs("./h_Q2_RES.pdf");
+    h_Q2_RES_inc->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_RES_inc.pdf").c_str());
     canvas->Clear();
 
-    h_El_DIS->Draw();
-    canvas->SaveAs("./h_El_DIS.pdf");
+    h_El_DIS_inc->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_El_DIS_inc.pdf").c_str());
     canvas->Clear();
 
-    h_Q2_DIS->Draw();
-    canvas->SaveAs("./h_Q2_DIS.pdf");
+    h_Q2_DIS_inc->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_DIS_inc.pdf").c_str());
+    canvas->Clear();
+
+    h_El_all_Int_2N->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_El_all_Int_2N.pdf").c_str());
+    canvas->Clear();
+
+    h_Q2_all_Int_2N->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_all_Int_2N.pdf").c_str());
+    canvas->Clear();
+
+    h_El_QE_2N->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_El_QE_2N.pdf").c_str());
+    canvas->Clear();
+
+    h_Q2_QE_2N->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_QE_2N.pdf").c_str());
+    canvas->Clear();
+
+    h_El_MEC_2N->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_El_MEC_2N.pdf").c_str());
+    canvas->Clear();
+
+    h_Q2_MEC_2N->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_MEC_2N.pdf").c_str());
+    canvas->Clear();
+
+    h_El_RES_2N->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_El_RES_2N.pdf").c_str());
+    canvas->Clear();
+
+    h_Q2_RES_2N->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_RES_2N.pdf").c_str());
+    canvas->Clear();
+
+    h_El_DIS_2N->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_El_DIS_2N.pdf").c_str());
+    canvas->Clear();
+
+    h_Q2_DIS_2N->Draw();
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_DIS_2N.pdf").c_str());
     canvas->Clear();
 
     h_El_all_Int_2p->Draw();
-    canvas->SaveAs("./h_El_all_Int_2p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_El_all_Int_2p.pdf").c_str());
     canvas->Clear();
 
     h_Q2_all_Int_2p->Draw();
-    canvas->SaveAs("./h_Q2_all_Int_2p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_all_Int_2p.pdf").c_str());
     canvas->Clear();
 
     h_El_QE_2p->Draw();
-    canvas->SaveAs("./h_El_QE_2p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_El_QE_2p.pdf").c_str());
     canvas->Clear();
 
     h_Q2_QE_2p->Draw();
-    canvas->SaveAs("./h_Q2_QE_2p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_QE_2p.pdf").c_str());
     canvas->Clear();
 
     h_El_MEC_2p->Draw();
-    canvas->SaveAs("./h_El_MEC_2p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_El_MEC_2p.pdf").c_str());
     canvas->Clear();
 
     h_Q2_MEC_2p->Draw();
-    canvas->SaveAs("./h_Q2_MEC_2p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_MEC_2p.pdf").c_str());
     canvas->Clear();
 
     h_El_RES_2p->Draw();
-    canvas->SaveAs("./h_El_RES_2p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_El_RES_2p.pdf").c_str());
     canvas->Clear();
 
     h_Q2_RES_2p->Draw();
-    canvas->SaveAs("./h_Q2_RES_2p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_RES_2p.pdf").c_str());
     canvas->Clear();
 
     h_El_DIS_2p->Draw();
-    canvas->SaveAs("./h_El_DIS.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_El_DIS.pdf").c_str());
     canvas->Clear();
 
     h_Q2_DIS_2p->Draw();
-    canvas->SaveAs("./h_Q2_DIS_2p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_DIS_2p.pdf").c_str());
     canvas->Clear();
 
     h_El_all_Int_1n1p->Draw();
-    canvas->SaveAs("./h_El_all_Int_1n1p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_El_all_Int_1n1p.pdf").c_str());
     canvas->Clear();
 
     h_Q2_all_Int_1n1p->Draw();
-    canvas->SaveAs("./h_Q2_all_Int_1n1p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_all_Int_1n1p.pdf").c_str());
     canvas->Clear();
 
     h_El_QE_1n1p->Draw();
-    canvas->SaveAs("./h_El_QE_1n1p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_El_QE_1n1p.pdf").c_str());
     canvas->Clear();
 
     h_Q2_QE_1n1p->Draw();
-    canvas->SaveAs("./h_Q2_QE_1n1p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_QE_1n1p.pdf").c_str());
     canvas->Clear();
 
     h_El_MEC_1n1p->Draw();
-    canvas->SaveAs("./h_El_MEC_1n1p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_El_MEC_1n1p.pdf").c_str());
     canvas->Clear();
 
     h_Q2_MEC_1n1p->Draw();
-    canvas->SaveAs("./h_Q2_MEC_1n1p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_MEC_1n1p.pdf").c_str());
     canvas->Clear();
 
     h_El_RES_1n1p->Draw();
-    canvas->SaveAs("./h_El_RES_1n1p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_El_RES_1n1p.pdf").c_str());
     canvas->Clear();
 
     h_Q2_RES_1n1p->Draw();
-    canvas->SaveAs("./h_Q2_RES_1n1p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_RES_1n1p.pdf").c_str());
     canvas->Clear();
 
     h_El_DIS_1n1p->Draw();
-    canvas->SaveAs("./h_El_DIS.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_El_DIS.pdf").c_str());
     canvas->Clear();
 
     h_Q2_DIS_1n1p->Draw();
-    canvas->SaveAs("./h_Q2_DIS_1n1p.pdf");
+    canvas->SaveAs(("./" + SaveDir + "/h_Q2_DIS_1n1p.pdf").c_str());
     canvas->Clear();
 }
