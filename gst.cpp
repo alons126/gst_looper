@@ -55,11 +55,11 @@ void gst::Loop(string Target, string GENIE_tune, string BeamE, string Q2_th) {
 
     double theta_e_min;
 
-    if (BeamE = "2070MeV") {
+    if (BeamE == "2070MeV") {
         theta_e_min = 7;
-    } else if (BeamE = "4029MeV") {
+    } else if (BeamE == "4029MeV") {
         theta_e_min = 10;
-    } else if (BeamE = "5986MeV") {
+    } else if (BeamE == "5986MeV") {
         theta_e_min = 9;
     }
 
